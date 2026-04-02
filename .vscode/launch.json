@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug raw2bag",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/root/GICI_DataPacker_ws/devel/lib/gici_datapacker/raw2bag",
+            "args": [],
+            "cwd": "/root/GICI_DataPacker_ws",
+            "MIMode": "gdb",
+            "preLaunchTask": "catkin_make编译"
+        }
+    ]
+}
