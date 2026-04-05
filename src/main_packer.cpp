@@ -8,9 +8,12 @@
 using namespace std;
 using namespace gici_datapacker;
 
-#define INPUT_FILEPATH "/root/GICI_DataPacker_ws/src/gici_datapacker/data"
-#define OUTPUT_FILEPATH "/root/GICI_DataPacker_ws/src/gici_datapacker/output"
-#define EPHEM_INTERVAL 50 // 每多少条观测，添加一次星历消息
+// 默认数据输入路径，可根据实际情况修改，data是文件夹名
+#define INPUT_FILEPATH "./data"
+// 默认输出路径，可根据实际情况修改
+#define OUTPUT_FILEPATH "./output"
+// 每多少条观测，添加一次星历消息
+#define EPHEM_INTERVAL 50
 
 map<char, vector<string>> sys2type;
 vector<vector<ObsPtr>> obs_epochs_list; // 所有历元的观测值列表，注意是二维列表
@@ -126,10 +129,11 @@ int main(int argc, char** argv){
     image_bag.close();
     obs_bag.close();
     nav_bag.close();
-    (void)system("rosbag info /root/GICI_DataPacker_ws/src/gici_datapacker/output/obs.bag");
-    (void)system("rosbag info /root/GICI_DataPacker_ws/src/gici_datapacker/output/nav.bag");
-    (void)system("rosbag info /root/GICI_DataPacker_ws/src/gici_datapacker/output/imu.bag");
-    (void)system("rosbag info /root/GICI_DataPacker_ws/src/gici_datapacker/output/image.bag");
+    // 输出bag文件信息
+    (void)system(("rosbag info " + string(OUTPUT_FILEPATH) + "/obs.bag").c_str());
+    (void)system(("rosbag info " + string(OUTPUT_FILEPATH) + "/nav.bag").c_str());
+    (void)system(("rosbag info " + string(OUTPUT_FILEPATH) + "/imu.bag").c_str());
+    (void)system(("rosbag info " + string(OUTPUT_FILEPATH) + "/image.bag").c_str());
 }
 
 

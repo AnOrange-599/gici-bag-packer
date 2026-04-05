@@ -111,13 +111,20 @@ namespace gici_datapacker{
         {"C8", FREQ8}
     };
 
-    //整秒数+小数
+    /*
+    时间结构体
+    用于表示精确时间，包含整秒部分和小数部分
+    */
     struct gtime_t
     {
-        time_t time;            /* time (s) expressed by standard time_t */
-        double sec;             /* fraction of second under 1 s */
+        time_t time;            /* 整秒部分，使用标准time_t类型表示，其实就是一个long类型的别名 */
+        double sec;             /* 秒的小数部分，小于1秒 */
     };
 
+    /*
+    星历基类
+    所有卫星系统（GCER）星历的基类，包含通用的星历信息
+    */
     struct EphemBase
     {
         virtual ~EphemBase() = default;
@@ -129,13 +136,14 @@ namespace gici_datapacker{
 
         uint32_t sat; // 卫星编号
         gtime_t header_t; // 我也不知道第1行到底是什么时间，就随便起一个吧
-        // gtime_t  ttr;                   /* transmission time in GPST */
-        // gtime_t  toe;                   /* ephemeris reference time in GPST */
-        // uint32_t health;                /* satellite health */
-        // double   ura;                   /* satellite signal accuracy */
-    };
-    typedef std::shared_ptr<EphemBase> EphemBasePtr;
 
+    };
+    typedef std::shared_ptr<EphemBase> EphemBasePtr;  /* 星历基类智能指针 */
+
+    /*
+    GLONASS星历结构体
+    继承自EphemBase，包含GLONASS特有的星历信息
+    */
     struct GloEphem : EphemBase
     {
         uint8_t         frq;            // 卫星频率编号 (GLONASS频点号，范围1-24)
@@ -147,13 +155,17 @@ namespace gici_datapacker{
         double          dtaun;          // L1和L2载波之间的硬件延迟
         double          toe,tof;        // toe：星历参考时刻(Time of Ephemeris)；tof：星历消息接收时刻(Time of Frame)。注意！GLONASS的参考时刻是日内秒，
     };
-    typedef std::shared_ptr<GloEphem> GloEphemPtr;
+    typedef std::shared_ptr<GloEphem> GloEphemPtr;  /* GLONASS星历智能指针 */
 
+    /*
+    GPS/Galileo/BeiDou星历结构体
+    继承自EphemBase，包含这些系统共有的星历信息
+    */
     struct Ephem : EphemBase
     {
         uint8_t sva;                         // 卫星精度指标 (URA index，消息中的sva字段)
         uint16_t code;                       // 编码标识 (GPS:L2码; GAL/BDS:数据源，消息中的code字段)
-        uint16_t iodc;                       // 钟差数据版本号 (Issue of data, clock，原uint32_t改为uint16_t匹配消息)
+        uint16_t iodc;                       // 钟差数据版本号 (Issue of data, clock)
 
         double toc;                          // 钟差参考时间 (GPST，秒，消息中的toc字段)
         double toes;                      // 星历参考时刻的周内秒 
@@ -166,35 +178,33 @@ namespace gici_datapacker{
         double f0, f1, f2;                // 卫星钟参数 (f0/f1/f2，对应消息中的f0/f1/f2字段)
         double tgd[2];                       // 群延迟参数
     };
-    typedef std::shared_ptr<Ephem> EphemPtr;
+    typedef std::shared_ptr<Ephem> EphemPtr;  /* GPS/Galileo/BeiDou星历智能指针 */
 
-
-
-
-
-
-
+    /*
+    观测数据结构体
+    用于存储卫星观测数据
+    */
     struct Obs {
         std::string prn;                // 卫星标识符，格式如 "G01"
         uint16_t week;                  // 整周数（不同系统基准不同）
         double tow;                     // 周内秒（北斗和GPS不同）
-        std::vector<uint16_t> SNR;        // 信号强度，即信噪比
+        std::vector<uint16_t> SNR;      // 信号强度，即信噪比
         std::vector<uint8_t> LLI;       // 失锁指示器，0 表示正常跟踪
         std::vector<std::string> code;  // 频率+调制方式，如 "1C"（2字符）
-        std::vector<double> P;          // 伪距
-        std::vector<double> L;          // 载波
-        std::vector<double> D;          // 多普勒
+        std::vector<double> P;          // 伪距观测值 (m)
+        std::vector<double> L;          // 载波相位观测值 (周)
+        std::vector<double> D;          // 多普勒观测值 (Hz)（这个在读取时一定要注意！！GICI会自动将Hz转换为m/s，所以保持RINEX文件中的赫兹即可。但是GICI的自动处理不会取负！所以在读取文件赋值Doppler观测值时要注意取负！）
 
         //以上为消息中包含的变量，下面保留了一部分原来的结构体
         uint32_t sat;                   // 卫星编号
         gtime_t time;                   // GPST基准下的时间
-        std::vector<double> freqs;      // 各信号对应的载波频率
-        std::vector<double> P_std;
-        std::vector<double> L_std;
-        std::vector<double> D_std;
-        std::vector<uint8_t> status;    // 观测状态标志（暂时不理解其用途）
+        std::vector<double> freqs;      // 各信号对应的载波频率 (Hz)
+        std::vector<double> P_std;      // 伪距观测值标准差 (m)
+        std::vector<double> L_std;      // 载波相位观测值标准差 (周)
+        std::vector<double> D_std;      // 多普勒观测值标准差 (Hz)
+        std::vector<uint8_t> status;    // 观测状态标志
     };
-    typedef std::shared_ptr<Obs> ObsPtr;
+    typedef std::shared_ptr<Obs> ObsPtr;  /* 观测数据智能指针 */
 
 
 
