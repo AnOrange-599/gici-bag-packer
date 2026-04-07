@@ -195,7 +195,7 @@ namespace gici_datapacker{
 
     gtime_t gpst2unix (gtime_t t){
         gtime_t result;
-        result.time = t.time+315964800.0-LEAP_SECONDS;
+        result.time = t.time+315964800.0-LEAP_SECONDS; //TODO: 这里可能是错的
         result.sec = t.sec;
         return result;
     }
