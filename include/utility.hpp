@@ -22,6 +22,7 @@
 #include <gici_datapacker/GnssEphemerides.h>
 #include <gici_datapacker/GnssEphemeris.h>
 #include <gici_datapacker/GlonassEphemeris.h>
+#include <gici_datapacker/GnssAntennaPosition.h>
 
 using namespace std;
 
@@ -131,6 +132,12 @@ namespace gici_datapacker{
     输入参数：一条观测值，观测值的卫星对应的星历列表
     输出参数：通过引用修改resultEphem，也就是找到的最新（且已发布）星历*/
     void FindNewEphem(ObsPtr& obs,vector<EphemBasePtr>& ephems,EphemBasePtr& resultEphem);
+
+    /*
+    判断是否观测值类型是否被GICI支持
+    输入参数：卫星系统标记（SYS_GPS），观测值类型字符串（如C1Q）
+    返回值：是否被支持 */
+    bool isObsTypeSupported(char sys, const std::string& obs_type);
     
 
 

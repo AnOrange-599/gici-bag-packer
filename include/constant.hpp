@@ -111,6 +111,20 @@ namespace gici_datapacker{
         {"C8", FREQ8}
     };
 
+    // 根据 GICI 映射表定义支持的频率（不含系统字母）
+    // GICI支持的GPS频率列表
+    const std::set<std::string> SUPPORTED_SUFFIX_G = {"1C","1S","1L","1X","1P","1W","1Y","1M","2C","2D","2S","2L","2X","2P","2W","2Y","2M","5I","5Q","5X"};
+    // GICI支持的GLONASS频率列表
+    const std::set<std::string> SUPPORTED_SUFFIX_R = {"1C","1P","4A","4B","4X","2C","2P","6A","6B","6X","3I","3Q","3X"};
+    // GICI支持的Galileo频率列表
+    const std::set<std::string> SUPPORTED_SUFFIX_E = {"1A","1B","1C","1X","1Z","5I","5Q","5X","7I","7Q","7X","8I","8Q","8X","6A","6B","6C","6X","6Z"};
+    // GICI支持的BeiDou频率列表
+    const std::set<std::string> SUPPORTED_SUFFIX_C = {"2I","2Q","2X","1D","1P","1X","1S","1L","1Z","5D","5P","5X","7I","7Q","7X","7D","7P","7Z","8D","8P","8X","6I","6Q","6X","6Z"};
+
+
+
+
+
     /*
     时间结构体
     用于表示精确时间，包含整秒部分和小数部分

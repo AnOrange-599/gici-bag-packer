@@ -4,7 +4,7 @@
         {
             "label": "catkin_make编译",
             "type": "shell",
-            "command": "cd ~/GICI_DataPacker_ws && catkin_make",
+            "command": "cd ~/gici/GICI_DataPacker_ws && catkin_make",
             "args": [],
             "group": {
                 "kind": "build",

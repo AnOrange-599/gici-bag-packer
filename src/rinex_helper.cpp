@@ -61,13 +61,19 @@ namespace gici_datapacker{
         vector<string> data_types = sys2type.at(sys_char);//比如GPS对应C1C L1C D1C S1C C2S L2S D2S S2S
         uint32_t obs_line_offset = 3; // 4个观测值的偏移量
         for(int i=0;i<data_types.size()/4;i++){ // 存在8个观测值类型，即2个频率
-            string long_field_str = rinex_str.substr(obs_line_offset, 62);// 该频率的4个观测值对应的字符串
+            string long_field_str = rinex_str.substr(obs_line_offset, 64);// 该频率的4个观测值对应的字符串
             if (long_field_str.find_first_not_of(' ') == string::npos){ //除了空格没有别的字符
+                obs_line_offset += 64;
                 continue;//4个空值直接跳过
             }
             for(int j=0;j<4;j++){//遍历该频率下每一个观测值
                 string field_str = rinex_str.substr(obs_line_offset, 14);
                 double field_value = stod(field_str);//得到观测值的double型
+                // 先检查一下是否支持该观测值类型，如果不支持，直接跳到下一个频率
+                if (!isObsTypeSupported(sys_char, data_types[4*i + j])) {
+                    obs_line_offset += 64;
+                    break;
+                }
                 //填入code
                 string code = data_types[4*i + j].substr(1,2);
                 if (std::find(obs->code.begin(), obs->code.end(), code) == obs->code.end()){ // 如果没有找到，说明还没有添加

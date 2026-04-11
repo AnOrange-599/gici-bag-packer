@@ -5,9 +5,9 @@
             "name": "Debug raw2bag",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/root/GICI_DataPacker_ws/devel/lib/gici_datapacker/raw2bag",
+            "program": "/root/gici/GICI_DataPacker_ws/devel/lib/gici_datapacker/raw2bag",
             "args": [],
-            "cwd": "/root/GICI_DataPacker_ws",
+            "cwd": "/root/gici/GICI_DataPacker_ws",
             "MIMode": "gdb",
             "preLaunchTask": "catkin_make编译"
         }

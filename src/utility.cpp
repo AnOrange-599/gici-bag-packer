@@ -286,18 +286,43 @@ namespace gici_datapacker{
 
 
 
-    void FindNewEphem(ObsPtr& obs,vector<EphemBasePtr>& ephems,EphemBasePtr& resultEphem){
-        double min_t = 9999999.0;
-        for (auto e : ephems) {
-            double dt = time_diff(obs->time, e->header_t); // obs - header_t
-            if (dt > 0.0 && dt < min_t) { // 过去的最近，也就是星历更早发布，并且距离最小
-                min_t = dt;
-                resultEphem = e;
-            }
+    // void FindNewEphem(ObsPtr& obs,vector<EphemBasePtr>& ephems,EphemBasePtr& resultEphem){
+    //     double min_t = 9999999.0;
+    //     for (auto e : ephems) {
+    //         double dt = time_diff(obs->time, e->header_t); // obs - header_t
+    //         if (dt > 0.0 && dt < min_t) { // 过去的最近，也就是星历更早发布，并且距离最小
+    //             min_t = dt;
+    //             resultEphem = e;
+    //         }
+    //     }
+    // }
+
+    void FindNewEphem(ObsPtr& obs, vector<EphemBasePtr>& ephems, EphemBasePtr& resultEphem) {
+    double min_abs_dt = 1e9;
+    resultEphem = nullptr;  // 初始化为空
+    for (auto e : ephems) {
+        double dt = time_diff(obs->time, e->header_t); // obs - header_t
+        double abs_dt = fabs(dt);
+        const double MAX_DT = 7200.0;  // 根据需求调整，或设为很大值
+        if (abs_dt < min_abs_dt && abs_dt <= MAX_DT) {
+            min_abs_dt = abs_dt;
+            resultEphem = e;
         }
     }
+}
 
 
-
+    bool isObsTypeSupported(char sys, const std::string& obs_type) {
+        // obs_type 例如 "C1Q", "L1Q", "D1Q", "S1Q"  -> 提取后缀 "1Q"
+        if (obs_type.length() < 2) return false;
+        std::string suffix = obs_type.substr(1); // 去掉第一个字符（C/L/D/S）
+        switch (sys) {
+            case 'G': return SUPPORTED_SUFFIX_G.find(suffix) != SUPPORTED_SUFFIX_G.end();
+            case 'R': return SUPPORTED_SUFFIX_R.find(suffix) != SUPPORTED_SUFFIX_R.end();
+            case 'E': return SUPPORTED_SUFFIX_E.find(suffix) != SUPPORTED_SUFFIX_E.end();
+            case 'C': return SUPPORTED_SUFFIX_C.find(suffix) != SUPPORTED_SUFFIX_C.end();
+            default: return false;
+        }
+    }
 
 }
