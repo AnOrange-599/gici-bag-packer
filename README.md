@@ -1,5 +1,7 @@
 # GICI Data Packer
 
+[] 2026年6月4日，为了后续参加比赛，暂时删掉了一部分源码。之后会恢复完整代码。
+
 ## 项目简介
 
 GICI Data Packer 是一个用于将 GNSS 观测数据、IMU 数据和图像数据打包成**GICI可运行的 ROS bag 文件**的工具。支持**处理 RINEX 格式的 GNSS 观测文件和导航文件**，以及 IMU 数据和视频数据，将它们转换为 ROS 消息并保存到 bag 文件中，以便于后续的 GNSS/INS 融合处理。
